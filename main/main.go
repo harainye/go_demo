@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
-	"go_projects/mongodb"
+	"github.com/gin-gonic/gin"
+	"go_projects/gintest"
+	"log"
+	"net/http"
 	"reflect"
 )
 
@@ -54,8 +57,63 @@ func main() {
 	//template.RenderTemplate()
 	//template.RenderHTemplate()
 	//ref.Test()
-	mongodb.ConnMongo()
+	//mongodb.ConnMongo()
 	//rate.DoRate()
+
+	log.Println("开始启动服务...")
+	router := gin.Default()
+
+	// 强制日志颜色化
+	gin.ForceConsoleColor()
+
+	//router.Use(gintest.Logger())
+
+	// gin test
+	ginV1 := router.Group("/v1/gintest")
+	{
+		ginV1.POST("/post", gintest.Post)
+		ginV1.POST("/form_post", gintest.FormPost)
+		ginV1.GET("/json", gintest.JSON)
+		ginV1.GET("/pureJson", gintest.PureJSON)
+		ginV1.POST("/upload", gintest.Upload)
+		ginV1.GET("/hasgo", gintest.HasGo)
+		ginV1.GET("/nogo", gintest.NoGo)
+		ginV1.GET("/uri/:name/:id", gintest.Uri)
+		ginV1.GET("/redirect", func(c *gin.Context) {
+			c.Request.URL.Path = "/v1/gintest/json"
+			router.HandleContext(c)
+		})
+	}
+
+	router.GET("/ping", func(c *gin.Context) {
+		c.String(200, "pong")
+	})
+
+	router.GET("/welcome", func(c *gin.Context) {
+		firstname := c.DefaultQuery("firstname", "Guest")
+		lastname := c.Query("lastname") // c.Request.URL.Query().Get("lastname") 的一种快捷方式
+		example := c.MustGet("example").(string)
+
+		c.String(http.StatusOK, "Hello %s %s %s", firstname, lastname, example)
+	})
+
+	/*m := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist("example1.com", "example2.com"),
+		Cache:      autocert.DirCache("/var/www/.cache"),
+	}
+
+	log.Fatal(autotls.RunWithManager(router, &m))*/
+
+	router.Run(":8888")
+}
+
+func setupRouter() *gin.Engine {
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(200, "pong")
+	})
+	return r
 }
 
 func PrintInfo(i interface{}) {
