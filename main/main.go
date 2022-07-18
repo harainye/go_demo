@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go_projects/gintest"
+	"go_projects/redis"
 	"log"
 	"net/http"
 	"reflect"
@@ -59,6 +60,8 @@ func main() {
 	//ref.Test()
 	//mongodb.ConnMongo()
 	//rate.DoRate()
+
+	redis.DoRedis()
 
 	log.Println("开始启动服务...")
 	router := gin.Default()
