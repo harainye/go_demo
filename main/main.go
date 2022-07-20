@@ -3,10 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_projects/gintest"
-	"go_projects/redis"
-	"log"
-	"net/http"
+	"go_projects/inf"
 	"reflect"
 )
 
@@ -61,7 +58,9 @@ func main() {
 	//mongodb.ConnMongo()
 	//rate.DoRate()
 
-	redis.DoRedis()
+	inf.CallPhone()
+
+	/*redis.DoRedis()
 
 	log.Println("开始启动服务...")
 	router := gin.Default()
@@ -108,7 +107,7 @@ func main() {
 
 	log.Fatal(autotls.RunWithManager(router, &m))*/
 
-	router.Run(":8888")
+	//router.Run(":8888")*/
 }
 
 func setupRouter() *gin.Engine {
