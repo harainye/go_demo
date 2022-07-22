@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_projects/inf"
+	"go_projects/vip"
 	"reflect"
 )
 
@@ -58,7 +58,11 @@ func main() {
 	//mongodb.ConnMongo()
 	//rate.DoRate()
 
-	inf.CallPhone()
+	//inf.CallPhone()
+
+	vip.GetIniFile()
+	//vip.GetJSONFile()
+	vip.GetYamlFile()
 
 	/*redis.DoRedis()
 

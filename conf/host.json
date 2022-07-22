@@ -1,0 +1,8 @@
+{
+  "version": "2.0",
+  "secret": "footmark",
+  "host": {
+    "origin": "http://www.baidu.com",
+    "port": 8080
+  }
+}
