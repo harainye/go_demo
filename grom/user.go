@@ -40,7 +40,7 @@ func DoGrom() {
 		fmt.Println("insert err:", err)
 		return
 	}*/
-	user := &User{Id: 1}
+	user := &User{Id: 2}
 
 	// 更新单个字段
 	// conn.Model(user).Update("UserName", "lisi")
@@ -49,11 +49,11 @@ func DoGrom() {
 
 	// 查询单个
 	user = new(User)
-	conn.First(user, 1)
+	conn.First(user, 2)
 	fmt.Println(user)
 
 	// 删除
-	conn.Delete(user)
+	//conn.Delete(user)
 
 	// 查询列表
 	var users []User
