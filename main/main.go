@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_projects/arr"
+	"go_projects/grom"
 	"reflect"
 )
 
@@ -43,7 +43,8 @@ func sum(a []int, c chan int) {
 
 func main() {
 
-	arr.DiArr()
+	//arr.DiArr()
+	grom.DoGrom()
 	// 测试复杂类型
 	/*for i := 0; i < len(complexTypes); i++ {
 		PrintInfo(complexTypes[i])
