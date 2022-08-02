@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_projects/vip"
+	"go_projects/arr"
 	"reflect"
 )
 
@@ -33,7 +33,17 @@ var complexTypes = []interface{}{
 	structValue.Method1, structValue.Method2, // 方法
 }
 
+func sum(a []int, c chan int) {
+	total := 0
+	for _, v := range a {
+		total += v
+	}
+	c <- total // send total to c
+}
+
 func main() {
+
+	arr.DiArr()
 	// 测试复杂类型
 	/*for i := 0; i < len(complexTypes); i++ {
 		PrintInfo(complexTypes[i])
@@ -60,9 +70,9 @@ func main() {
 
 	//inf.CallPhone()
 
-	vip.GetIniFile()
+	//vip.GetIniFile()
 	//vip.GetJSONFile()
-	vip.GetYamlFile()
+	//vip.GetYamlFile()
 
 	/*redis.DoRedis()
 
