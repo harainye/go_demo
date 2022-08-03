@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_projects/grom"
 	"reflect"
 )
 
@@ -41,10 +40,93 @@ func sum(a []int, c chan int) {
 	c <- total // send total to c
 }
 
+type Car struct {
+	Name  string
+	Price float32
+}
+
+type Person struct {
+	Name string
+	Age  int
+}
+
+type Teacher struct {
+	Person
+	ProjectName string
+}
+
+type Student struct {
+	Person
+	Grade int
+}
+
+type ClassService interface {
+	Class()
+}
+
+func (t *Teacher) Class() {
+	fmt.Printf("老师:%s，教的科目是: %s \n", t.Name, t.ProjectName)
+}
+
+func (s *Student) Class() {
+	fmt.Printf("学生：%s，现在的年级是：%d\n", s.Name, s.Grade)
+}
+
+func Shangke(class ClassService) {
+	class.Class()
+}
+
+type ElectricCar struct {
+	Car
+	Battery int32
+}
+type PetrolCar struct {
+	Car
+	Gasoline int32
+}
+
+//定义一个接口
+type RunService interface {
+	Run()
+}
+
+// 实现1
+func (car *PetrolCar) Run() {
+	fmt.Printf("%s PetrolCar run \n", car.Name)
+}
+
+// 实现2
+func (car *ElectricCar) Run() {
+	fmt.Printf("%s ElectricCar run \n", car.Name)
+}
+
+func Do(run RunService) {
+	run.Run()
+}
+
 func main() {
 
+	/*xp := ElectricCar{
+		Car{Name: "xp", Price: 200},
+		70,
+	}
+	petrolCar := PetrolCar{
+		Car{Name: "BMW", Price: 300},
+		50,
+	}
+	Do(&xp)
+	Do(&petrolCar)*/
+
+	teacher := Teacher{Person{Name: "王老师", Age: 30}, "English"}
+
+	student := Student{Person{Name: "小明", Age: 10}, 3}
+
+	//teacher.Class()
+	//student.Class()
+	Shangke(&teacher)
+	Shangke(&student)
 	//arr.DiArr()
-	grom.DoGrom()
+	//grom.DoGrom()
 	// 测试复杂类型
 	/*for i := 0; i < len(complexTypes); i++ {
 		PrintInfo(complexTypes[i])
