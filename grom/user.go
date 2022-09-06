@@ -15,6 +15,22 @@ type User struct {
 	Pic         string
 }
 
+type Job struct {
+	Id          int
+	Name        string
+	UserId      int
+	Description string
+}
+
+type Role struct {
+	Id          int
+	Name        string
+	DisplayName string
+	Age         int
+	Addr        string
+	Pic         string
+}
+
 func DoGrom() {
 
 	// mysql: 数据库的驱动名
@@ -32,7 +48,7 @@ func DoGrom() {
 	defer conn.Close()
 	// 先创建数据 --- 创建对象
 
-	/*user := User{UserName: "test", Age: 25, Addr: "福州", Pic: "/static/img.png", DisplayName: "test"}
+	/*user := User{UserName: "test1", Age: 30, Addr: "厦门", Pic: "/static/img.png", DisplayName: "test"}
 
 	// 插入(创建)数据
 	err = conn.Create(&user).Error
@@ -40,6 +56,15 @@ func DoGrom() {
 		fmt.Println("insert err:", err)
 		return
 	}*/
+	// 根据Map创建
+	/*err = conn.Model(&User{}).Create(map[string]interface{}{
+		"UserName":    "张三",
+		"Age":         20,
+		"Addr":        "厦门",
+		"Pic":         "/static/img.png",
+		"DisplayName": "张三",
+	}).Error*/
+
 	user := &User{Id: 2}
 
 	// 更新单个字段
@@ -49,15 +74,37 @@ func DoGrom() {
 
 	// 查询单个
 	user = new(User)
-	conn.First(user, 2)
-	fmt.Println(user)
+	conn.First(&user)
+	fmt.Println("====查询第一个用户", user)
 
+	result := conn.Take(&user)
+	fmt.Println("====获取一条记录，没有指定排序字段", user)
+	fmt.Println("====获取的记录数：", result.RowsAffected)
 	// 删除
 	//conn.Delete(user)
 
 	// 查询列表
 	var users []User
-	conn.Find(&users)
-	fmt.Println(users)
+	//conn.Find(&users)
+	//fmt.Println(users)
 
+	//conn.Find(&users, []int{1, 2, 3})
+	//fmt.Println("====用in查询", users)
+
+	err = conn.Model(&User{}).Select("user.user_name, job.name, job.description").Joins("left join job on job.user_id = user.id").Scan(&Job{}).Error
+	// SELECT users.name, emails.email FROM `users` left join emails on emails.user_id = users.id
+	/*rows, err := conn.Table("user").Select("user.id, user.user_name, user.age").Joins("left join job on job.user_id = user.id").Rows()
+	for rows.Next() {
+		var u User
+		err = rows.Scan(&u.Id, &u.UserName, &u.Age)
+		if err != nil {
+			panic(err)
+		}
+		users = append(users, u)
+	}*/
+	fmt.Println("====关联查询", users)
+
+	var job Job
+	conn.Raw("SELECT * FROM job where user_id =2").Scan(&job)
+	fmt.Println("====语句查询", job)
 }
