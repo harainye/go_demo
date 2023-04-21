@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_defer "go_projects/defer"
 	"go_projects/gintest"
 	"go_projects/redis"
 	"log"
 	"net/http"
-	"net/mail"
 	"reflect"
-	"regexp"
 )
 
 // 结构体
@@ -176,6 +175,11 @@ func main() {
 	//vip.GetJSONFile()
 	//vip.GetYamlFile()
 
+	// defer demo
+	//_defer.DeferCall()
+	//_defer.DeferCall2()
+	_defer.DeferCall3()
+
 	redis.DoRedis()
 
 	log.Println("开始启动服务...")
@@ -215,169 +219,8 @@ func main() {
 		c.String(http.StatusOK, "Hello %s %s %s", firstname, lastname, example)
 	})
 
-	/*m := autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("example1.com", "example2.com"),
-		Cache:      autocert.DirCache("/var/www/.cache"),
-	}
+	router.Run(":8888")
 
-	log.Fatal(autotls.RunWithManager(router, &m))*/
-
-	//router.Run(":8888")
-
-	//fmt.Println(regexp.IsEmailValid("test44@qq.com"))
-	//fmt.Println(valid("test44@qq.com"))
-	//fmt.Println(CheckMobile("15059459039"))
-	fmt.Println(CheckDate("2022-09-30"))
-	//fmt.Println(CheckIdCard("35081246682578451X"))
-	//fmt.Println(CheckPhone("15059459039"))
-	//fmt.Println(CheckEmail("aa_ss22@163.com"))
-	//fmt.Println(checkUri("user/88/964488/2022/1008/203557p6qyXsau.jpeg"))
-	fmt.Println(checkSpecial("+86 0597111"))
-	//fmt.Println("demo return:", Demo())
-	//fmt.Println("demo2 return:", Demo2())
-	//rec.RunRecover()
-}
-func Demo() int {
-	// 实际上return 执行了两步操作。
-	//因为返回值没有命名，所以return 之前
-	//首先默认创建了一个临时零值变量(假设为s)作为返回值
-	//然后将i赋值给s,此时s的值是0。后续的操作是针对i进行的，
-	//所以不会影响s, 此后因为s不会更新，
-	//所以return s 不会改变
-	//    相当于：
-	//          var i int
-	//          s := i
-	//          return s
-	var i int
-	defer func() {
-		i++
-		fmt.Println("defer2:", i) // 打印结果为 defer: 2
-	}()
-	defer func() {
-		i++
-		fmt.Println("defer1:", i) // 打印结果为 defer: 1
-	}()
-	return i
-}
-func Demo2() (i int) {
-	//因为返回值已经提前定义了，不会产生临时零值变量，
-	//返回值就是提前定义的变量，后续所有的操作也都是基于已经定义的变量，
-	//任何对于返回值变量的修改都会影响到返回值本身。
-	//
-	//就相当于s就是命名的变量i, 后续所有的操作都是基于
-	//命名变量i(s),返回值也是i, 所以每一次defer操作，
-	//都会更新返回值i。
-	defer func() {
-		i++
-		fmt.Println("defer2:", i) // 打印结果为 defer: 2
-	}()
-	defer func() {
-		i++
-		fmt.Println("defer1:", i) // 打印结果为 defer: 1
-	}()
-	return i // 或者直接 return 效果相同
-}
-
-func valid(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
-
-// CheckMobile 检验手机号
-func CheckEmail(email string) bool {
-	// 匹配规则
-	// $ 结束符
-	regRuler := "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(email)
-
-}
-
-// CheckMobile 检验手机号
-func CheckMobile(phone string) bool {
-	// 匹配规则
-	// ^1第一位为一
-	// [345789]{1} 后接一位345789 的数字
-	// \\d \d的转义 表示数字 {9} 接9位
-	// $ 结束符
-	regRuler := "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$"
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(phone)
-
-}
-
-func CheckDate(phone string) bool {
-	regRuler := "((((19|20)\\d{2})-(0?(1|[3-9])|1[012])-(0?[1-9]|[12]\\d|30))|(((19|20)\\d{2})-(0?[13578]|1[02])-31)|(((19|20)\\d{2})-0?2-(0?[1-9]|1\\d|2[0-8]))|((((19|20)([13579][26]|[2468][048]|0[48]))|(2000))-0?2-29))$"
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(phone)
-}
-
-func checkUri(uri string) bool {
-	regRuler := "^[A-Za-z0-9_\\./]+$"
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(uri)
-}
-
-// CheckIdCard 检验身份证
-func CheckIdCard(card string) bool {
-	//18位身份证 ^(\d{17})([0-9]|X)$
-	// 匹配规则
-	// (^\d{15}$) 15位身份证
-	// (^\d{18}$) 18位身份证
-	// (^\d{17}(\d|X|x)$) 18位身份证 最后一位为X的用户
-	regRuler := "(^\\d{15}$)|(^\\d{18}$)|(^\\d{17}(\\d|X|x)$)"
-
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(card)
-}
-
-// CheckPhone 检验电话号码
-func CheckPhone(phone string) bool {
-	// 国内电话号码(0511-4405222、021-87888822)
-	// 匹配规则
-	// \d{3}-\d{8}|\d{4}-\d{7}
-	//regRuler := "^((0\\d{2,3})-)(\\d{7,8})(-(\\d{3,}))?$"
-	regRuler := "/\\d{3}-\\d{8}|\\d{4}-\\d{7}|^(13[0-9]|14[01456879]|15[0-3,5-9]|16[2567]|17[0-8]|18[0-9]|19[0-3,5-9])\\d{8}$/"
-
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(phone)
-}
-
-func checkSpecial(specialStr string) bool {
-	regRuler := "^[0-9_@#\\- $%!~*()&,;=+]+$"
-	// 正则调用规则
-	reg := regexp.MustCompile(regRuler)
-	// 返回 MatchString 是否匹配
-	return reg.MatchString(specialStr)
-}
-
-//binding type interface 要修改的结构体
-//value type interace 有数据的结构体
-func structAssign(binding interface{}, value interface{}) {
-	bVal := reflect.ValueOf(binding).Elem() //获取reflect.Type类型
-	vVal := reflect.ValueOf(value).Elem()   //获取reflect.Type类型
-	vTypeOfT := vVal.Type()
-	for i := 0; i < vVal.NumField(); i++ {
-		// 在要修改的结构体中查询有数据结构体中相同属性的字段，有则修改其值
-		name := vTypeOfT.Field(i).Name
-		fmt.Printf("====type:", vTypeOfT.Field(i).Type)
-		if ok := bVal.FieldByName(name).IsValid(); ok {
-			bVal.FieldByName(name).Set(reflect.ValueOf(vVal.Field(i).Interface()))
-		}
-	}
 }
 
 func setupRouter() *gin.Engine {
