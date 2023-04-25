@@ -6,6 +6,7 @@ import (
 	_defer "go_projects/defer"
 	"go_projects/gintest"
 	"go_projects/redis"
+	"go_projects/routine"
 	"log"
 	"net/http"
 	"reflect"
@@ -179,6 +180,13 @@ func main() {
 	//_defer.DeferCall()
 	//_defer.DeferCall2()
 	_defer.DeferCall3()
+
+	// goroutine
+	//routine.TestChan()
+	routine.TestSelect()
+
+	// test lock
+	//locktest.TestLock()
 
 	redis.DoRedis()
 
